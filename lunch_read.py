@@ -122,29 +122,63 @@ class JanDanSpider(object):
                 obj.append(bigRow)
                 j = j + 1
 
-            for menu in obj:
-                print(menu.content)
-            #
+            # for menu in obj:
+            # print(len(menu.content))
+            # print(menu.content)
+            rowNumber = 20
+            columnNumber = 6
+
+            class DailyMenu(object):
+                def __init__(self, date, weekOfDay, menuA, menuB, menuC, all):
+                    self.date = date
+                    self.weekOfDay = weekOfDay
+                    self.menuA = menuA
+                    self.menuB = menuB
+                    self.menuC = menuC
+                    self.all = all
+
+            dailyMenuArray = []
+            indexOfMenu = 1
+            while indexOfMenu < 6:
+                date = obj[0].content[indexOfMenu]
+                weekOfDay = obj[1].content[indexOfMenu]
+                menuA = obj[3].content[indexOfMenu] + ',' + obj[4].content[indexOfMenu] + ',' + obj[5].content[
+                    indexOfMenu]
+                menuB = obj[8].content[indexOfMenu] + ',' + obj[9].content[indexOfMenu] + ',' + obj[10].content[
+                    indexOfMenu]
+                menuC = obj[13].content[indexOfMenu] + ',' + obj[14].content[indexOfMenu] + ',' + obj[15].content[
+                    indexOfMenu]
+                all = obj[17].content[indexOfMenu] + ',' + obj[18].content[indexOfMenu] + ',' + obj[19].content[
+                    indexOfMenu]
+                indexOfMenu = indexOfMenu + 1
+                dailyMenuArray.append(DailyMenu(date, weekOfDay, menuA, menuB, menuC, all))
+
+            print(dailyMenuArray[2])
+            i = 0
 
             #     Next 就是把这部分的数据写入数据库了
 
-            return
             database = r"/Users/Helen/Library/Mobile Documents/com~apple~CloudDocs/Wang/Develop/db/text.sqlite"
 
             # create a database connection
             conn = self.create_connection(database)
+
             with conn:
                 # create a new project
-                project = ('Cool App with SQLite & Python', '2015-01-01', '2015-01-30');
-                project_id = self.create_project(conn, project)
+                # project = ('Cool App with SQLite & Python', '2015-01-01', '2015-01-30');
+                # project_id = self.create_project(conn, project)
 
                 # tasks
-                task_1 = ('Analyze the requirements of the app', 1, 1, project_id, '2015-01-01', '2015-01-02')
-                task_2 = ('Confirm with user about the top requirements', 1, 1, project_id, '2015-01-03', '2015-01-05')
+                # task_1 = ('Analyze the requirements of the app', 1, 1, project_id, '2015-01-01', '2015-01-02')
+                # task_2 = ('Confirm with user about the top requirements', 1, 1, project_id, '2015-01-03', '2015-01-05')
 
+                while i < 5:
+                    print(dailyMenuArray[i].date)
+                    self.create_lunch(conn, dailyMenuArray[i])
+                    i = i + 1
                 # create tasks
-                self.create_task(conn, task_1)
-                self.create_task(conn, task_2)
+                # self.create_task(conn, task_1)
+                # self.create_task(conn, task_2)
 
             # # print(type(anotherEntry))
             # # print(anotherEntry[8])
@@ -168,7 +202,24 @@ class JanDanSpider(object):
             # 通过下一页的解析规则，加载下一页
             # self.deal_pre_page(self.parse_page(text, self.rule_pre_page))
 
-    def create_connection(self,db_file):
+    def create_lunch(self, conn, lunchObj):
+        print(lunchObj.date, lunchObj.weekOfDay, lunchObj.menuA, lunchObj.menuB, lunchObj.menuC, lunchObj.all)
+        sql = ''' INSERT INTO lunch(menuDate,weekOfDay,menuA,menuB,menuC,menuAll)
+                          VALUES(?,?,?,?,?,?) '''
+        cur = conn.cursor()
+        cur.execute(sql,
+        #             (
+        #                 '12 / 04 / 2021(星期一)',
+        #                 '(星期一)',
+        # '洋蔥排骨, 青豆燒豆腐, 灼時蔬',
+        # '洋蔥排骨, 鹵水雞鎚, 灼時蔬',
+        # '鹵水雞鎚, 豆角炒牛肉, 灼時蔬',
+        # '蘋果雪耳豬骨湯, 白米粥, 蔥花大餅'))
+                    (lunchObj.date, lunchObj.weekOfDay, lunchObj.menuA, lunchObj.menuB, lunchObj.menuC, lunchObj.all))
+        conn.commit()
+        return cur.lastrowid
+
+    def create_connection(self, db_file):
         """ create a database connection to the SQLite database
             specified by db_file
         :param db_file: database file
@@ -178,11 +229,11 @@ class JanDanSpider(object):
         try:
             conn = sqlite3.connect(db_file)
         except Error as e:
-            print('看看 呃呃呃',e)
+            print('看看 呃呃呃', e)
 
         return conn
 
-    def create_project(self,conn, project):
+    def create_project(self, conn, project):
         """
         Create a new project into the projects table
         :param conn:
@@ -196,7 +247,7 @@ class JanDanSpider(object):
         conn.commit()
         return cur.lastrowid
 
-    def create_task(self,conn, task):
+    def create_task(self, conn, task):
         """
         Create a new task
         :param conn:
