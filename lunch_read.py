@@ -100,7 +100,7 @@ class JanDanSpider(object):
                     self.content = number
 
             # 20 行
-            # print(len(anotherEntry))
+            print(len(anotherEntry))
             #       每一行的 列数
             # print(len(anotherEntry[0]))
             # anotherEntry[0] 首先我们的 anotherEntry 会获取我们的 tr 下面所有的 td
@@ -110,10 +110,15 @@ class JanDanSpider(object):
             while j < len(anotherEntry):
                 bigRow = RowWW([])
                 for column in anotherEntry[j]:
+                    print('column : ', column.text)
                     try:
                         bb = column[0][0].text
                     except:
-                        bb = column[0].text
+                        try:
+                            bb = column[0].text
+                        except:
+                            bb = column.text
+                    print(bb)
                     if (bb == None):
                         bb = ''
                     else:
@@ -123,8 +128,9 @@ class JanDanSpider(object):
                 j = j + 1
 
             # for menu in obj:
-            # print(len(menu.content))
-            # print(menu.content)
+            #     print(menu.content)
+
+
             rowNumber = 20
             columnNumber = 6
 
@@ -148,7 +154,7 @@ class JanDanSpider(object):
                     indexOfMenu]
                 menuC = obj[13].content[indexOfMenu] + ',' + obj[14].content[indexOfMenu] + ',' + obj[15].content[
                     indexOfMenu]
-                all = obj[17].content[indexOfMenu] + ',' + obj[18].content[indexOfMenu] + ',' + obj[19].content[
+                all = obj[18].content[indexOfMenu] + ',' + obj[19].content[indexOfMenu] + ',' + obj[20].content[
                     indexOfMenu]
                 indexOfMenu = indexOfMenu + 1
                 dailyMenuArray.append(DailyMenu(date, weekOfDay, menuA, menuB, menuC, all))
