@@ -121,12 +121,9 @@ class JanDanSpider(object):
                 obj.append(bigRow)
                 j = j + 1
 
-            # for menu in obj:
-            #     print(menu.content)
 
 
-            rowNumber = 20
-            columnNumber = 6
+
 
             class DailyMenu(object):
                 def __init__(self, date, weekOfDay, menuA, menuB, menuC, all):
