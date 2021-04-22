@@ -4,6 +4,8 @@ __New_author__ Wang Zhou
 __time__: 2017/11/14 12:48
 """
 
+import datetime
+
 import urllib.request
 import urllib.parse
 from lxml import etree
@@ -96,7 +98,7 @@ class JanDanSpider(object):
                     self.content = number
 
             # 20 行
-            print(len(anotherEntry))
+            # print(len(anotherEntry))
 
             while j < len(anotherEntry):
                 bigRow = RowWW([])
@@ -137,7 +139,10 @@ class JanDanSpider(object):
             dailyMenuArray = []
             indexOfMenu = 1
             while indexOfMenu < 6:
-                date = obj[0].content[indexOfMenu]
+                stringDate = obj[0].content[indexOfMenu]
+
+                date_time_str = 'Jun 28 2018 7:40AM'
+                date = datetime.datetime.strptime(stringDate, '%d/%m/%Y')
                 weekOfDay = obj[1].content[indexOfMenu]
                 menuA = obj[3].content[indexOfMenu] + ',' + obj[4].content[indexOfMenu] + ',' + obj[5].content[
                     indexOfMenu]
