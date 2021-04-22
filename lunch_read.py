@@ -14,6 +14,12 @@ import sqlite3
 from sqlite3 import Error
 
 
+
+
+
+
+
+
 def create_lunch(conn, lunchObj):
     # print(lunchObj.date, lunchObj.weekOfDay, lunchObj.menuA, lunchObj.menuB, lunchObj.menuC, lunchObj.all)
     sql = ''' INSERT INTO lunch(menuDate,weekOfDay,menuA,menuB,menuC,menuAll)
@@ -200,5 +206,11 @@ if __name__ == '__main__':
 
     # 爬取的网站
     url = "http://intranet.phoenixtv.com/dept_page.shtml?dept=15&navid=18"
-    spider = JanDanSpider()
-    spider.load_page(url)
+    # spider = JanDanSpider()
+    # spider.load_page(url)
+
+a = [1,2,3];
+
+a.insert(0,4)
+
+print(a)
