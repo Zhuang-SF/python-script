@@ -94,7 +94,6 @@ class JanDanSpider(object):
 
             anotherEntry = etree.HTML(text).xpath('//table/tbody/tr/td/table/tbody/tr')
 
-            # anotherEntry[0][1][0][0].text
             obj = []
             i = 0
             j = 0
@@ -104,7 +103,7 @@ class JanDanSpider(object):
                     self.content = number
 
             # 20 行
-            # print(len(anotherEntry))
+            print(len(anotherEntry))
 
             while j < len(anotherEntry):
                 bigRow = RowWW([])
@@ -120,7 +119,7 @@ class JanDanSpider(object):
                     #     except:
                     #         bb = column.text
                     # print('搞毛啊', bb)
-                    bb = column.text
+                    bb = column[0].text
                     if (bb == None):
                         bb = ''
                     else:
@@ -206,11 +205,11 @@ if __name__ == '__main__':
 
     # 爬取的网站
     url = "http://intranet.phoenixtv.com/dept_page.shtml?dept=15&navid=18"
-    # spider = JanDanSpider()
-    # spider.load_page(url)
+    spider = JanDanSpider()
+    spider.load_page(url)
 
-a = [1,2,3];
-
-a.insert(0,4)
-
-print(a)
+# a = [1,2,3];
+#
+# a.insert(0,4)
+#
+# print(a)
