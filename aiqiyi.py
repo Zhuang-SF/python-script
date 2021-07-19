@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*
 import requests
 import json
 import re
@@ -5,9 +6,10 @@ import re
 import pandas as pd
 
 
-def get_iqy():
+def get_iqy(year):
     #  电影起始数量
     pagenum = 0
+
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36"
@@ -26,7 +28,7 @@ def get_iqy():
 
     while (hasNext != 0):
         # https://pcw-api.iqiyi.com/search/recommend/list?channel_id=1&data_type=1&market_release_date_level=2021&mode=24&page_id=4&ret_num=48&session=e76d98e79967fc20a6d7914efcfda2ee
-        url_0 = "https://pcw-api.iqiyi.com/search/recommend/list?channel_id=1&data_type=1&mode=24&market_release_date_level=2021&page_id=" + str(
+        url_0 = "https://pcw-api.iqiyi.com/search/recommend/list?channel_id=1&data_type=1&mode=24&market_release_date_level="+str(year)+"&page_id=" + str(
             pagenum) + "&ret_num=48&session=ad1d98bb953b7e5852ff097c088d66f2"
         pagenum = pagenum + 1
         # url_0 = url_0 + str(i) + "&ret_num=48&session=ad1d98bb953b7e5852ff097c088d66f2"
@@ -56,15 +58,30 @@ def get_iqy():
             # 异常捕获，防止出现电影没有description
             # 2 description
             try:
-                score = j['description']  # description
+                description = j['description']  # description
+                # print(score)
+                temp_list.append(description)
+            except KeyError:
+                print("KeyError")
+                temp_list.append("iqy no description")  # 替换字符串
+
+            link = j['categories']  # 找到categories
+            temp_list.append(link)
+
+            try:
+                score = j['score']  # description
                 # print(score)
                 temp_list.append(score)
             except KeyError:
                 print("KeyError")
                 temp_list.append("iqy暂无评分")  # 替换字符串
 
-            link = j['categories']  # 找到categories
-            temp_list.append(link)
+            exclusive = j['exclusive']
+            temp_list.append(exclusive)
+
+            qiyiProduce = j['qiyiProduced']
+            temp_list.append(qiyiProduce)
+
 
             dataRes.append(temp_list)
             # print(temp_list)
@@ -76,31 +93,41 @@ def get_iqy():
 
 
 if __name__ == '__main__':
-    movieResult = get_iqy()
-    # print(movieResult[0])
-    title = []
-    period = []
-    description = []
-    categories = []
-    for j in movieResult:  # 开始循环遍历json串
-        for idx, val in enumerate(j):
-            if((idx+1)%4 == 1):
-                title.append(val)
-            if ((idx + 1) % 4 == 2):
-                period.append(val)
-            if ((idx + 1) % 4 == 3):
-                description.append(val)
-            if ((idx + 1) % 4 == 0):
-                categories.append(''.join(val))
+    # , 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009
+    yearList = [2021]
+
+    for year in yearList:
+        movieResult = get_iqy(year)
+        # print(movieResult[0])
+        title = []
+        period = []
+        description = []
+        categories = []
+        score=[]
+        exclusive =[]
+        qiyiProduce = []
+        for j in movieResult:  # 开始循环遍历json串
+            for idx, val in enumerate(j):
+                if((idx+1)%7 == 1):
+                    title.append(val)
+                if ((idx + 1) % 7 == 2):
+                    period.append(val)
+                if ((idx + 1) % 7 == 3):
+                    description.append(val)
+                if ((idx + 1) % 7 == 4):
+                    categories.append(''.join(val))
+                if ((idx + 1) % 7 == 5):
+                    score.append(val)
+                if ((idx + 1) % 7 == 6):
+                    exclusive.append(val)
+                if ((idx + 1) % 7 == 0):
+                    qiyiProduce.append(val)
 
 
+        # 字典中的key值即为csv中列名
+        dataframe = pd.DataFrame({'title': title, 'period': period, 'description': description, 'categories': categories,
+                                  'score':score, 'exclusive': exclusive, 'qiyiProduce':qiyiProduce
+                                  })
 
-    # 任意的多组列表
-    a = [1, 2, 3]
-    b = [4, 5, 6]
-
-    # 字典中的key值即为csv中列名
-    dataframe = pd.DataFrame({'title': title, 'period': period, 'description': description, 'categories': categories})
-
-    # 将DataFrame存储为csv,index表示是否显示行名，default=True
-    dataframe.to_csv("/Users/Helen/Desktop/sample/script/test.csv", index=False, sep=',')
+        # 将DataFrame存储为csv,index表示是否显示行名，default=True
+        dataframe.to_csv("./movie_"+str(year)+".csv", index=False, sep=',')
