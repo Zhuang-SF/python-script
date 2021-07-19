@@ -111,15 +111,16 @@ class JanDanSpider(object):
                     # print('column : aaa ',column, column.text)
                     # NOte： 以前用一层层的到里面去获取才能拿到，
                     #  现在发现直接 .text 就能获取了
-                    # try:
-                    #     bb = column[0][0].text
-                    # except:
-                    #     try:
-                    #         bb = column[0].text
-                    #     except:
-                    #         bb = column.text
-                    # print('搞毛啊', bb)
-                    bb = column[0].text
+                    try:
+                        bb = column[0][0].text
+                    except:
+                        try:
+                            bb = column[0].text
+                        except:
+                            bb = column.text
+
+                    # bb = column[0].text
+                    print('搞毛啊', bb)
                     if (bb == None):
                         bb = ''
                     else:
@@ -146,8 +147,8 @@ class JanDanSpider(object):
             while indexOfMenu < 6:
                 stringDate = obj[0].content[indexOfMenu]
 
-                date_time_str = 'Jun 28 2018 7:40AM'
                 date = datetime.datetime.strptime(stringDate, '%d/%m/%Y')
+                print(date)
                 weekOfDay = obj[1].content[indexOfMenu]
                 menuA = obj[3].content[indexOfMenu] + ',' + obj[4].content[indexOfMenu] + ',' + obj[5].content[
                     indexOfMenu]
