@@ -93,8 +93,8 @@ def get_iqy(year):
 
 
 if __name__ == '__main__':
-    # , 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009
-    yearList = [2021]
+    #
+    yearList = [2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010, 2009]
 
     for year in yearList:
         movieResult = get_iqy(year)
